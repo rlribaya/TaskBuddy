@@ -18,7 +18,7 @@
             android:exported="false" />
         <activity
             android:name=".DevelopersPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".SettingsPage"
             android:exported="false" />
