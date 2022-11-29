@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_splash_screen"
     tools:context=".HomePage">
 
     <LinearLayout
@@ -16,6 +17,7 @@
             android:layout_width="328dp"
             android:layout_height="167dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
             app:srcCompat="@drawable/logo_and_name" />
 
         <TableLayout
@@ -27,23 +29,33 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/notesButton"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_margin="10dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="0dp"
-                    android:text="Notes" />
+                    android:layout_width="152dp"
+                    android:layout_height="154dp"
+                    android:layout_margin="0dp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="#00FFFFFF"
+                    android:padding="0dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/notes_logo" />
 
-                <Button
+                <TextView
+                    android:id="@+id/spacing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="    " />
+
+                <ImageButton
                     android:id="@+id/listButton"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_margin="10dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:text="Checklist" />
+                    android:layout_width="152dp"
+                    android:layout_height="154dp"
+                    android:layout_margin="0dp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="#00FFFFFF"
+                    android:padding="0dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/task_logo" />
             </TableRow>
 
         </TableLayout>

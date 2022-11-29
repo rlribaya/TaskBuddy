@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class HomePage extends AppCompatActivity {
 
@@ -13,8 +14,8 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        Button notesButton = findViewById(R.id.notesButton);
-        Button listButton = findViewById(R.id.listButton);
+        ImageButton notesButton = findViewById(R.id.notesButton);
+        ImageButton listButton = findViewById(R.id.listButton);
         Button settingsButton = findViewById(R.id.settingsButton);
         Button devButton = findViewById(R.id.devButon);
 
