@@ -1,9 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="20dp"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:gravity="center"
     tools:context=".TaskView">
+    <EditText
+        android:id="@+id/task_view_title"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingVertical="5dp"
+        >
+        <LinearLayout
+            android:id="@+id/task_view_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <!--
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1"
+                            android:gravity="center"
+                            >
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                />
+                            <EditText
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="random text lol"
+                                />
+                            <Button
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@null"
+                                android:text="x"
+                                android:textAllCaps="false"
+                                android:textColor="#FF0000"
+                                android:textSize="26sp"
+                                />
+                        </LinearLayout>
+            -->
+            <Button
+                android:id="@+id/task_view_add"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circle"
+                android:text="+"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:id="@+id/task_view_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:textStyle="bold"
+        android:background="@drawable/curved_button"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
