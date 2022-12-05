@@ -14,41 +14,10 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        ImageButton notesButton = findViewById(R.id.notesButton);
-        ImageButton listButton = findViewById(R.id.listButton);
-        Button settingsButton = findViewById(R.id.settingsButton);
-        Button devButton = findViewById(R.id.devButon);
 
-        notesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomePage.this,NotesList.class);
-                startActivity(intent);
-            }
-        });
-        listButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomePage.this,TasksList.class);
-                startActivity(intent);
-            }
-        });
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomePage.this,SettingsPage.class);
-                startActivity(intent);
-            }
-        });
-        devButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomePage.this,DevelopersPage.class);
-                startActivity(intent);
-            }
-        });
-
-
-
+        findViewById(R.id.btn_notes).setOnClickListener(v -> startActivity(new Intent(this, NotesList.class)));
+        findViewById(R.id.btn_tasks).setOnClickListener(v -> startActivity(new Intent(this, TasksList.class)));
+        findViewById(R.id.btn_settings).setOnClickListener(v -> startActivity(new Intent(this, SettingsPage.class)));
+        findViewById(R.id.btn_dev).setOnClickListener(v -> startActivity(new Intent(this, DevelopersPage.class)));
     }
 }
