@@ -27,7 +27,7 @@ public class NoteView extends AppCompatActivity {
             txtTitle.setText(details[1]);
             txtContent.setText(details[2]);
 
-            LinearLayout layout = findViewById(R.id.note_main);
+            LinearLayout layout = findViewById(R.id.note_view_main);
             Button btn_delete = new Button(getApplicationContext());
             DBHandler db = new DBHandler(getApplicationContext());
 
