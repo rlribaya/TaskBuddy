@@ -63,7 +63,7 @@ public class TaskView extends AppCompatActivity {
     }
 
     private void addDeleteButton() {
-        LinearLayout layout = findViewById(R.id.note_view_main);
+        LinearLayout layout = findViewById(R.id.task_view_main);
         Button btn_delete = new Button(getApplicationContext());
         DBHandler db = new DBHandler(getApplicationContext());
 
