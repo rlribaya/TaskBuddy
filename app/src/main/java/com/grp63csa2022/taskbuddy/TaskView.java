@@ -35,6 +35,7 @@ public class TaskView extends AppCompatActivity {
         details = intent.getStringArrayExtra("details"); // returns null if not found
         if (details != null) { // IF UPDATE
             placeTasks();
+            addDeleteButton();
         }
         findViewById(R.id.task_view_save).setOnClickListener(v -> saveTasks(details != null));
     }
@@ -59,6 +60,26 @@ public class TaskView extends AppCompatActivity {
                     task_container.getChildCount()-1
             );
         }
+    }
+
+    private void addDeleteButton() {
+        LinearLayout layout = findViewById(R.id.note_view_main);
+        Button btn_delete = new Button(getApplicationContext());
+        DBHandler db = new DBHandler(getApplicationContext());
+
+        btn_delete.setText("Delete");
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.gravity = Gravity.CENTER;
+        btn_delete.setLayoutParams(layoutParams);
+        btn_delete.setOnClickListener(v->{
+            db.deleteTask(details[0]);
+            Toast.makeText(this, "Successfully Deleted Note", Toast.LENGTH_SHORT).show();
+            finish();
+        });
+        layout.addView(btn_delete);
     }
 
     private LinearLayout createTask(String text, Boolean checked) {

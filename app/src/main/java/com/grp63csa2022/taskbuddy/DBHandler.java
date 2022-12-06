@@ -266,4 +266,17 @@ public class DBHandler extends SQLiteOpenHelper {
         );
         db.close();
     }
+    /**
+     * deletes task of given ID
+     * @param id
+     */
+    public void deleteTask(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(
+                TABLE_TASKS,
+                KEY_ID + "=?",
+                new String[]{id}
+        );
+        db.close();
+    }
 }
