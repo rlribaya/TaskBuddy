@@ -5,16 +5,30 @@
     android:id="@+id/task_view_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp"
     android:orientation="vertical"
     android:weightSum="1"
     android:gravity="center"
     tools:context=".TaskView">
+    <FrameLayout
+        android:id="@+id/ribbon"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/app_logo_text"
+            android:scaleY="2"
+            android:scaleX="2"
+            />
+    </FrameLayout>
     <EditText
         android:id="@+id/task_view_title"
-        android:textSize="18sp"
+        style="@style/Text.Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:hint="Title"
         />
     <ScrollView
         android:layout_width="match_parent"
@@ -59,22 +73,15 @@
             -->
             <Button
                 android:id="@+id/task_view_add"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/circle"
-                android:text="+"
-                android:textStyle="bold"
-                android:textSize="20sp"
+                style="@style/AddTaskButton"
                 />
         </LinearLayout>
     </ScrollView>
     <Button
         android:id="@+id/task_view_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.Button"
         android:text="SAVE"
-        android:textStyle="bold"
-        android:background="@drawable/curved_button"
+        android:layout_marginBottom="10dp"
         />
 
 </LinearLayout>

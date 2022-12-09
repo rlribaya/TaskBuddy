@@ -1,8 +1,11 @@
 package com.grp63csa2022.taskbuddy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -11,8 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TaskView extends AppCompatActivity {
     LinearLayout task_container;
@@ -35,11 +45,10 @@ public class TaskView extends AppCompatActivity {
         details = intent.getStringArrayExtra("details"); // returns null if not found
         if (details != null) { // IF UPDATE
             placeTasks();
-            addDeleteButton();
+            placeMenu();
         }
         findViewById(R.id.task_view_save).setOnClickListener(v -> saveTasks(details != null));
     }
-
     private void placeTasks(){
         /*
             0 = id
@@ -61,27 +70,35 @@ public class TaskView extends AppCompatActivity {
             );
         }
     }
-
-    private void addDeleteButton() {
-        LinearLayout layout = findViewById(R.id.task_view_main);
-        Button btn_delete = new Button(getApplicationContext());
-        DBHandler db = new DBHandler(getApplicationContext());
-
-        btn_delete.setText("Delete");
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.gravity = Gravity.CENTER;
-        btn_delete.setLayoutParams(layoutParams);
-        btn_delete.setOnClickListener(v->{
-            db.deleteTask(details[0]);
-            Toast.makeText(this, "Successfully Deleted Note", Toast.LENGTH_SHORT).show();
-            finish();
+    private void placeMenu(){
+        FrameLayout frameLayout = findViewById(R.id.ribbon);
+        ImageButton imgBtn = new ImageButton(this, null, 0, R.style.MoreButton);
+        imgBtn.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.END
+        ));
+        frameLayout.addView(imgBtn);
+        PopupMenu menu = new PopupMenu(this, imgBtn);
+        menu.inflate(R.menu.popup_menu);
+        menu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_delete: {
+                    DBHandler db = new DBHandler(getApplicationContext());
+                    db.deleteTask(details[0]);
+                    Toast.makeText(this, "Successfully Deleted Note", Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+                }
+                case R.id.menu_export: {
+                    saveFile();
+                }
+                default: return false;
+            }
+            return true;
         });
-        layout.addView(btn_delete);
+        imgBtn.setOnClickListener(v -> menu.show());
     }
-
     private LinearLayout createTask(String text, Boolean checked) {
         LinearLayout layout = new LinearLayout(this);
         layout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -97,6 +114,7 @@ public class TaskView extends AppCompatActivity {
         // create the editText
         EditText txt = new EditText(this);
         txt.setText(text);
+        txt.setMaxLines(1);
         txt.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -125,12 +143,25 @@ public class TaskView extends AppCompatActivity {
         layout.addView(btn);
         return layout;
     }
-
     private void saveTasks(Boolean update) {
         // Get the title
-        String title = txtTitle.getText().toString(),
-                tasks = "",
-                status = "";
+        String title = txtTitle.getText().toString();
+        String tasks[] = getTasks();
+        // Get now the Database
+        DBHandler db = new DBHandler(this);
+        if (update){
+            db.updateTask(details[0], title, tasks[0], tasks[1]);
+            Toast.makeText(this, "Updated Task Successfully", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            db.insertTask(title, tasks[0], tasks[1]);
+            Toast.makeText(this, "Saved Task Successfully", Toast.LENGTH_SHORT).show();
+        }
+
+        finish();
+    }
+    private String[] getTasks() {
+        String tasks = "", status = "";
         int childCount = task_container.getChildCount()-1;
         // Get each task and status separate using "\n" until n-1
         for (int i = 0; i < childCount; i++) {
@@ -145,18 +176,47 @@ public class TaskView extends AppCompatActivity {
             tasks += child_task.getText().toString() + "\n";
             status += (child_status.isChecked() ? "1" : "0") + "\n";
         }
+        return new String[]{tasks, status};
+    }
+    // Save file to downloads but request first for permission
+    private void saveFile() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                PackageManager.PERMISSION_GRANTED
+        );
+    }
+    // For saving file after requesting permission
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        try {
+            String title = txtTitle.getText().toString();
 
-        // Get now the Database
-        DBHandler db = new DBHandler(this);
-        if (update){
-            db.updateTask(details[0], title, tasks, status);
-            Toast.makeText(this, "Updated Task Successfully", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            db.insertTask(title, tasks, status);
-            Toast.makeText(this, "Saved Task Successfully", Toast.LENGTH_SHORT).show();
-        }
+            File file = new File("/storage/emulated/0/Download", title + ".txt");
+            FileWriter writer = new FileWriter(file);
 
-        finish();
+            String tasks[] = getTasks();
+            String taskName[] = tasks[0].split("\n");
+            String taskStat[] = tasks[1].split("\n");
+
+            writer.write(title + "\n\n");
+            for (int i = 0; i < taskName.length; i++) {
+                if (taskStat[i].equals("1")) writer.write("x\t");
+                else writer.write("o\t");
+                writer.write(taskName[i] + "\n");
+            }
+            writer.close();
+            System.out.println();
+            Toast.makeText(this, "Successfully saved file at\n\"Download/"+file.getName()+"\"", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "ERROR SAVING FILE", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 }
