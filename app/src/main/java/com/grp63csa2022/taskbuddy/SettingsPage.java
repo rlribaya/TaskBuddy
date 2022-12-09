@@ -1,5 +1,6 @@
 package com.grp63csa2022.taskbuddy;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -7,9 +8,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -26,7 +24,12 @@ public class SettingsPage extends AppCompatActivity {
         setContentView(R.layout.activity_settings_page);
 
         findViewById(R.id.settings_reset).setOnClickListener(v -> resetAll());
-        findViewById(R.id.settings_export).setOnClickListener(v -> exportAll());
+        findViewById(R.id.settings_export).setOnClickListener(v -> ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE},
+                PackageManager.PERMISSION_GRANTED
+        ));
         findViewById(R.id.settings_dev).setOnClickListener(v -> startActivity(new Intent(this, DevelopersPage.class)));
 
     }
@@ -35,51 +38,66 @@ public class SettingsPage extends AppCompatActivity {
         db.resetDatabase();
         Toast.makeText(getApplicationContext(), "TaskBuddy has been reset successfully", Toast.LENGTH_SHORT).show();
     }
-
-    private void exportAll(){
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE},
-                PackageManager.PERMISSION_GRANTED
-        );
-        Toast.makeText(getApplicationContext(), "All notes and tasks has been exported", Toast.LENGTH_SHORT).show();
-    }
     // For saving file after requesting permission
     @Override
     public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        DBHandler db = new DBHandler(getApplicationContext());
-        ArrayList<HashMap<String, String>> allNotes;
-        allNotes = db.getAllNotes();
-        ArrayList<HashMap<String, String>> allTasks;
-        allTasks = db.getAllTasks();
-
-        //iterate to all notes
-        try {
-            for (int i = 0; i < allNotes.size(); i++){
-            HashMap<String, String> note = allNotes.get(i);
-
-
-                String title = note.get("KEY_TITLE");
-                String content = note.get("KEY_CONTENT");
-                File file = new File("/storage/emulated/0/Download", title + "_note.txt");
-                FileWriter writer = new FileWriter(file);
-
-
-                writer.write(title + "\n\n" + content);
-
-                writer.close();
-                System.out.println("Successfully saved file at\n\"Download/"+file.getName()+"\"");
-            }
-            Toast.makeText(this, "Successfully saved file at\n\"Download/", Toast.LENGTH_LONG).show();
-        }
-        catch (IOException e) {
-            Toast.makeText(this, "ERROR SAVING FILE", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-
+        exportAll();
     }
+    private void exportAll(){
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Export All?");
+        alertDialog.setMessage("Are you sure you want to export all Notes and Tasks?");
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", (dialogInterface, i) ->
+                Toast.makeText(this, "Notes and Tasks has not been exported", Toast.LENGTH_SHORT).show());
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", (dialogInterface, i) -> {
+            File main_folder = new File("/storage/emulated/0/Download", "/TaskBuddy");
+            File notes_folder = new File(main_folder, "/notes");
+            File tasks_folder = new File(main_folder, "/tasks");
 
+            main_folder.mkdir();
+            notes_folder.mkdir();
+            tasks_folder.mkdir();
+            try {
+                DBHandler db = new DBHandler(getApplicationContext());
+                // NOTES
+                ArrayList<String[]> notes = db.getAllNotesArr();
+                for (String[] n : notes) { // 0 = ID; 1 = TITLE; 2 = CONTENT
+                    File file = new File(notes_folder, n[1] + "_note" + n[0] + ".txt");
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(n[1] + "\n\n" + n[2]);
+                    writer.close();
+                }
+                // TASKS
+                ArrayList<String[]> tasks = db.getAllTasksArr();
+                for (String[] t : tasks) { // 0 = ID; 1 = TITLE; 2 = TASK; 3 = STATUS
+                    File file = new File(tasks_folder, t[1] + "_task" + t[0] + ".txt");
+                    FileWriter writer = new FileWriter(file);
+                    // Write title
+                    writer.write(t[1] + "\n\n");
+                    // Write tasks
+                    String[] taskName = t[2].split("\n");
+                    String[] taskStat = t[3].split("\n");
+                    for (int x = 0; x < taskName.length; x++) {
+                        if (taskStat[x].equals("1")) writer.write("x\t");
+                        else writer.write("o\t");
+                        writer.write(taskName[x] + "\n");
+                    }
+                    writer.close();
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "ERROR EXPORTING", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            exportConfirmation();
+        });
+        alertDialog.show();
+    }
+    private void exportConfirmation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Success!");
+        builder.setMessage("All notes and tasks has been successfully exported");
+        builder.setNeutralButton("OK", null);
+        builder.show();
+    }
 }
