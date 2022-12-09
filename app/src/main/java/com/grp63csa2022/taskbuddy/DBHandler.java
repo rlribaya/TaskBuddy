@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
@@ -110,35 +111,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
     /**
-     * This Method is used for getting
-     * a specific note using its ID
-     * @param id unique id of the note
-     * @return id, title, content of specified note
-     */
-    @SuppressLint("Range")
-    public String[] getNote(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.query(
-                TABLE_NOTES,
-                new String[]{KEY_ID, KEY_TITLE, KEY_CONTENT},
-                KEY_ID+ "=?",new String[]{String.valueOf(id)},
-                null,
-                null,
-                null,
-                null
-        );
-        if (!c.moveToNext()) return null; // RETURN NULL IF NOTE ID IS NOT FOUND
-
-        String[] output =  {
-                c.getString(c.getColumnIndex(KEY_ID)),
-                c.getString(c.getColumnIndex(KEY_TITLE)),
-                c.getString(c.getColumnIndex(KEY_CONTENT))
-        };
-        db.close();
-        return output;
-    }
-
-    /**
      * Gets all of the notes of user.
      * To be used by a list adapter.
      * @return an ArrayList of HashMaps for list adapter use
@@ -163,7 +135,31 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
         return list;
     }
-
+    /**
+     * Gets all of the notes of user.
+     * For general use.
+     * @return an ArrayList of an Array of Strings for general use
+     */
+    @SuppressLint("Range")
+    public ArrayList<String[]> getAllNotesArr() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String q = "SELECT " +
+                KEY_ID + ", " +
+                KEY_TITLE + ", " +
+                KEY_CONTENT +
+                " FROM " + TABLE_NOTES;
+        Cursor c = db.rawQuery(q, null);
+        ArrayList<String[]> list = new ArrayList<>();
+        while (c.moveToNext()) {
+            list.add(new String[]{
+                    c.getString(c.getColumnIndex(KEY_ID)),
+                    c.getString(c.getColumnIndex(KEY_TITLE)),
+                    c.getString(c.getColumnIndex(KEY_CONTENT))
+            });
+        }
+        db.close();
+        return list;
+    }
     /**
      * Gets all the tasks of the user
      * To be used by a list adapter
@@ -192,6 +188,33 @@ public class DBHandler extends SQLiteOpenHelper {
         return list;
     }
     /**
+     * Gets all of the tasks of user.
+     * For general use.
+     * @return an ArrayList of an Array of Strings for general use
+     */
+    @SuppressLint("Range")
+    public ArrayList<String[]> getAllTasksArr() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String q = "SELECT " +
+                KEY_ID + ", " +
+                KEY_TITLE + ", " +
+                KEY_CONTENT + ", " +
+                KEY_STATUS +
+                " FROM " + TABLE_TASKS;
+        Cursor c = db.rawQuery(q, null);
+        ArrayList<String[]> list = new ArrayList<>();
+        while (c.moveToNext()) {
+            list.add(new String[]{
+                    c.getString(c.getColumnIndex(KEY_ID)),
+                    c.getString(c.getColumnIndex(KEY_TITLE)),
+                    c.getString(c.getColumnIndex(KEY_CONTENT)),
+                    c.getString(c.getColumnIndex(KEY_STATUS))
+            });
+        }
+        db.close();
+        return list;
+    }
+    /**
      *
      * @return the number of rows in the NOTES table
      */
@@ -211,7 +234,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
         return result;
     }
-
     /**
      * updates title & content of given id
      * @param id
@@ -231,7 +253,6 @@ public class DBHandler extends SQLiteOpenHelper {
         );
         db.close();
     }
-
     /**
      * updates the title, tasks, & status of given id
      * @param id
