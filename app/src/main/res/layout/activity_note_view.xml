@@ -27,6 +27,8 @@
         android:id="@+id/note_view_title"
         style="@style/Text.Header"
         android:hint="Title"
+        android:inputType="text"
+        android:maxLines="1"
         android:layout_width="match_parent"
         />
 

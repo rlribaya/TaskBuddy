@@ -27,6 +27,7 @@
         android:id="@+id/task_view_title"
         style="@style/Text.Header"
         android:layout_width="match_parent"
+        android:inputType="text"
         android:maxLines="1"
         android:hint="Title"
         />
