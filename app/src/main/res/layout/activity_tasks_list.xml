@@ -5,19 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp"
     android:gravity="center_horizontal"
     android:weightSum="1"
     tools:context=".TasksList">
+    <FrameLayout
+        android:id="@+id/ribbon"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/app_logo_text"
+            android:scaleY="2"
+            android:scaleX="2"
+            />
+    </FrameLayout>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.Header"
         android:text="Tasks"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp"
         />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="?android:attr/listDivider" />
     <GridView
         android:id="@+id/tasks_list"
         android:layout_width="match_parent"
@@ -29,11 +42,9 @@
         />
     <Button
         android:id="@+id/tasks_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.Button"
         android:text="Add"
-        android:background="@drawable/curved_button"
-        android:layout_marginTop="10dp"
+        android:layout_marginVertical="10dp"
         />
 
 </LinearLayout>
