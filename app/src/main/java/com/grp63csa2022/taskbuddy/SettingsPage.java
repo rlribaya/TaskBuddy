@@ -34,9 +34,17 @@ public class SettingsPage extends AppCompatActivity {
 
     }
     private void resetAll(){
-        DBHandler db = new DBHandler(getApplicationContext());
-        db.resetDatabase();
-        Toast.makeText(getApplicationContext(), "TaskBuddy has been reset successfully", Toast.LENGTH_SHORT).show();
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Reset?");
+        alertDialog.setMessage("Are you sure you want to reset the application?\nAll notes and tasks will be deleted!");
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO", (dialogInterface, i) ->
+                Toast.makeText(this, "Reset Cancelled", Toast.LENGTH_SHORT).show());
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES", (dialogInterface, i) -> {
+            DBHandler db = new DBHandler(getApplicationContext());
+            db.resetDatabase();
+            dialogConfirmation("Reset!", "App has been successfully reset");
+        });
+        alertDialog.show();
     }
     // For saving file after requesting permission
     @Override
@@ -89,14 +97,14 @@ public class SettingsPage extends AppCompatActivity {
                 Toast.makeText(this, "ERROR EXPORTING", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-            exportConfirmation();
+            dialogConfirmation("Success!", "All notes and tasks has been successfully exported");
         });
         alertDialog.show();
     }
-    private void exportConfirmation() {
+    private void dialogConfirmation(String title, String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Success!");
-        builder.setMessage("All notes and tasks has been successfully exported");
+        builder.setTitle(title);
+        builder.setMessage(content);
         builder.setNeutralButton("OK", null);
         builder.show();
     }
