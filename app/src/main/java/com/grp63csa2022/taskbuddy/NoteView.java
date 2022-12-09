@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class NoteView extends AppCompatActivity {
     String details[];
@@ -30,8 +31,8 @@ public class NoteView extends AppCompatActivity {
         txtTitle = findViewById(R.id.note_view_title);
         txtContent = findViewById(R.id.note_view_content);
 
-        placeMenu();
         details = getIntent().getStringArrayExtra("details");
+        placeMenu();
         if (details != null) {
             txtTitle.setText(details[1]);
             txtContent.setText(details[2]);
@@ -97,12 +98,14 @@ public class NoteView extends AppCompatActivity {
         try {
             String title = txtTitle.getText().toString();
             String content = txtContent.getText().toString();
-            File file = new File("/storage/emulated/0/Download", title + "_note.txt");
+
+            String id;
+            if (details != null) id = details[0];
+            else id = LocalDateTime.now().toString().replaceAll("[^\\d]","");
+
+            File file = new File("/storage/emulated/0/Download", title + "_note" + id + ".txt");
             FileWriter writer = new FileWriter(file);
-
-
             writer.write(title + "\n\n" + content);
-
             writer.close();
             System.out.println();
             Toast.makeText(this, "Successfully saved file at\n\"Download/"+file.getName()+"\"", Toast.LENGTH_LONG).show();

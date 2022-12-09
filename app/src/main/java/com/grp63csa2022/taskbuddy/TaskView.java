@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class TaskView extends AppCompatActivity {
     LinearLayout task_container;
@@ -40,9 +42,9 @@ public class TaskView extends AppCompatActivity {
                     task_container.getChildCount()-1
             );
         });
-        placeMenu();
         // Check for details
         details = getIntent().getStringArrayExtra("details"); // returns null if not found
+        placeMenu();
         if (details != null) { // IF UPDATE
             placeTasks();
         }
@@ -115,6 +117,7 @@ public class TaskView extends AppCompatActivity {
         EditText txt = new EditText(this);
         txt.setText(text);
         txt.setMaxLines(1);
+        txt.setInputType(InputType.TYPE_CLASS_TEXT);
         txt.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -192,8 +195,11 @@ public class TaskView extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         try {
             String title = txtTitle.getText().toString();
+            String id;
+            if (details != null) id = details[0];
+            else id = LocalDateTime.now().toString().replaceAll("[^\\d]","");
 
-            File file = new File("/storage/emulated/0/Download", title + "_task.txt");
+            File file = new File("/storage/emulated/0/Download", title + "_task" + id + ".txt");
             FileWriter writer = new FileWriter(file);
 
             String tasks[] = getTasks();
