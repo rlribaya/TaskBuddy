@@ -40,12 +40,11 @@ public class TaskView extends AppCompatActivity {
                     task_container.getChildCount()-1
             );
         });
+        placeMenu();
         // Check for details
-        Intent intent = getIntent();
-        details = intent.getStringArrayExtra("details"); // returns null if not found
+        details = getIntent().getStringArrayExtra("details"); // returns null if not found
         if (details != null) { // IF UPDATE
             placeTasks();
-            placeMenu();
         }
         findViewById(R.id.task_view_save).setOnClickListener(v -> saveTasks(details != null));
     }
@@ -81,12 +80,13 @@ public class TaskView extends AppCompatActivity {
         frameLayout.addView(imgBtn);
         PopupMenu menu = new PopupMenu(this, imgBtn);
         menu.inflate(R.menu.popup_menu);
+        menu.getMenu().findItem(R.id.menu_delete).setVisible(details != null);
         menu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_delete: {
                     DBHandler db = new DBHandler(getApplicationContext());
                     db.deleteTask(details[0]);
-                    Toast.makeText(this, "Successfully Deleted Note", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Successfully Deleted Task", Toast.LENGTH_SHORT).show();
                     finish();
                     break;
                 }
@@ -187,18 +187,13 @@ public class TaskView extends AppCompatActivity {
                 PackageManager.PERMISSION_GRANTED
         );
     }
-    // For saving file after requesting permission
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            String[] permissions,
-            int[] grantResults
-    ) {
+    @Override // For saving file after requesting permission
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         try {
             String title = txtTitle.getText().toString();
 
-            File file = new File("/storage/emulated/0/Download", title + ".txt");
+            File file = new File("/storage/emulated/0/Download", title + "_task.txt");
             FileWriter writer = new FileWriter(file);
 
             String tasks[] = getTasks();
