@@ -5,7 +5,6 @@
     android:id="@+id/task_view_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="30dp"
     android:orientation="vertical"
     android:paddingHorizontal="20dp"
     android:paddingVertical="10dp"
