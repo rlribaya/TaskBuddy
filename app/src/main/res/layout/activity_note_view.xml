@@ -5,15 +5,29 @@
     android:id="@+id/note_view_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp"
     android:orientation="vertical"
-    android:padding="50dp"
     android:weightSum="1"
+    android:gravity="center"
     tools:context=".NoteView">
-
+    <FrameLayout
+        android:id="@+id/ribbon"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/app_logo_text"
+            android:scaleY="2"
+            android:scaleX="2"
+            />
+    </FrameLayout>
     <EditText
         android:id="@+id/note_view_title"
+        style="@style/Text.Header"
+        android:hint="Title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         />
 
     <EditText
@@ -27,9 +41,9 @@
         />
     <Button
         android:id="@+id/note_view_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.Button"
         android:text="Save"
         android:layout_gravity="center"
+        android:layout_marginVertical="10dp"
         />
 </LinearLayout>
