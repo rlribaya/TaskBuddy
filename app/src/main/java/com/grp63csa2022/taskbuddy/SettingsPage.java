@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SettingsPage extends AppCompatActivity {
 
@@ -87,8 +86,8 @@ public class SettingsPage extends AppCompatActivity {
                     String[] taskName = t[2].split("\n");
                     String[] taskStat = t[3].split("\n");
                     for (int x = 0; x < taskName.length; x++) {
-                        if (taskStat[x].equals("1")) writer.write("x\t");
-                        else writer.write("o\t");
+                        if (taskStat[x].equals("1")) writer.write("[X]\t");
+                        else writer.write("[ ]\t");
                         writer.write(taskName[x] + "\n");
                     }
                     writer.close();

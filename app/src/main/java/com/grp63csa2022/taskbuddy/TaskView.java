@@ -208,8 +208,8 @@ public class TaskView extends AppCompatActivity {
 
             writer.write(title + "\n\n");
             for (int i = 0; i < taskName.length; i++) {
-                if (taskStat[i].equals("1")) writer.write("x\t");
-                else writer.write("o\t");
+                if (taskStat[i].equals("1")) writer.write("[X]\t");
+                else writer.write("[ ]\t");
                 writer.write(taskName[i] + "\n");
             }
             writer.close();

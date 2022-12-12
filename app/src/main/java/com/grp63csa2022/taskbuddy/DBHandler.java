@@ -6,10 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
@@ -46,6 +44,10 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+    /**
+     * drops all tables then calls onCreate method
+     */
     public void resetDatabase(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);

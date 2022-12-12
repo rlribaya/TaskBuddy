@@ -1,7 +1,6 @@
 package com.grp63csa2022.taskbuddy;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 public class DevelopersPage extends AppCompatActivity {
